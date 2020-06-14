@@ -53,26 +53,40 @@ void FPGA::largeMV(const float* large_mat, const float* input,
 	float* vec = this->vector();
 	float* mat = this->matrix();
 	
-	for(int n = 0; n < N ; n += SIZE)
+	for(int i = 0; i < N ; i += SIZE)
 	{
-		for(int m = 0; m < M ; m += SIZE)
+		for(int j = 0; j < M ; j += SIZE)
 		{
 			// 0) Initialize input vector
-			int n_remain = min(SIZE, N-n);
-			int m_remain = min(SIZE, M-m);
+			int n_remain = min(SIZE, N-i);
+			int m_remain = min(SIZE, M-j);
 			
-			// 1) Assign a vector
-			// IMPLEMENT THIS
-			
-			// 2) Assign a matrix
-			// IMPLEMENT THIS
+            // !) Assign a vector
+            /* IMPLEMENT */
+            memcpy(vec, input + j, sizeof(float) * block_col);
+            //if(block_col < v_size_) memset()
+            // 2) Assign a matrix
+            /* IMPLEMENT */
+            int k=0;
+            for(; k< block_row ; k++)
+            {
+                memcpy(mat+ v_size_* k, large_mat + (i+k) * num_input + j, sizeof(float) * block_col);
+                if(block_col < v_size_) memset(mat+ v_size_ * k + block_col, 0, sizeof(float) * (v_size_ - block_col));
+            }
+            if(k < SIZE)
+            {
+                for(int x = 0; x < SIZE - k ; x++)
+                {
+                    memset(mat+ v_size_ * ( k + x ), 0, sizeof(float) * v_size_);
+                }
+            }
 
 			// 3) Call a function `run() to execute MV multiplication
 			const float* rst = this->run();
 
 			// 4) Accumulate intermediate results
 			for(int nn = 0; nn < n_remain; ++nn)
-				output[n + nn] += rst[nn];
+				output[i + nn] += rst[nn];
 		} 
 	}
 }
