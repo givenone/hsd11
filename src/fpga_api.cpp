@@ -81,7 +81,7 @@ void FPGA::largeMV(const float* large_mat, const float* input,
             }
         }
         // 3) Call a function `block_call() to execute MV multiplication
-        const float* ret = this->blockMV();
+        const float* ret = this->run();
 
         // 4) Accumulate intermediate results
         for(int row = 0; row < block_row; ++row)
