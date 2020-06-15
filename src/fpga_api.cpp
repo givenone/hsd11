@@ -82,6 +82,15 @@ void FPGA::largeMV(const float* large_mat, const float* input,
                 memset(mat+ SIZE * ( k + x ), 0, sizeof(float) * SIZE);
             }
         }
+
+        for(int y=0 ; y < SIZE + 1; y++)
+        {
+            for(int x =0 ; x < SIZE; x++)
+            {
+                printf("%f ", *(data + (y * SIZE) + x ));
+            }
+        }
+
         // 3) Call a function `block_call() to execute MV multiplication
         const float* ret = this->run();
 
