@@ -53,31 +53,31 @@ void FPGA::largeMV(const float* large_mat, const float* input,
   for (int i = 0; i < num_output; ++i)
     output[i] = 0;
 
-  for (int i = 0; i < num_output; i += m_size_)
+  for (int i = 0; i < num_output; i += SIZE)
   {
-    for (int j = 0; j < num_input; j += v_size_)
+    for (int j = 0; j < num_input; j += SIZE)
     {
         // 0) Initialize input vector		
-        int block_row = min(m_size_, num_output-i);
-        int block_col = min(v_size_, num_input-j);
+        int block_row = min(SIZE, num_output-i);
+        int block_col = min(SIZE, num_input-j);
 
         // !) Assign a vector
         /* IMPLEMENT */
         memcpy(vec, input + j, sizeof(float) * block_col);
-        //if(block_col < v_size_) memset()
+        //if(block_col < SIZE) memset()
         // 2) Assign a matrix
         /* IMPLEMENT */
         int k=0;
         for(; k< block_row ; k++)
         {
-            memcpy(mat+ v_size_* k, large_mat + (i+k) * num_input + j, sizeof(float) * block_col);
-            if(block_col < v_size_) memset(mat+ v_size_ * k + block_col, 0, sizeof(float) * (v_size_ - block_col));
+            memcpy(mat+ SIZE* k, large_mat + (i+k) * num_input + j, sizeof(float) * block_col);
+            if(block_col < SIZE) memset(mat+ SIZE * k + block_col, 0, sizeof(float) * (SIZE - block_col));
         }
-        if(k < m_size_)
+        if(k < SIZE)
         {
-            for(int x = 0; x < m_size_ - k ; x++)
+            for(int x = 0; x < SIZE - k ; x++)
             {
-                memset(mat+ v_size_ * ( k + x ), 0, sizeof(float) * v_size_);
+                memset(mat+ SIZE * ( k + x ), 0, sizeof(float) * SIZE);
             }
         }
         // 3) Call a function `block_call() to execute MV multiplication
