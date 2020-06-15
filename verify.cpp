@@ -25,7 +25,7 @@ int main(void)
     {
         for(int j=0; j < M; j++)
          {
-            flat[M + i * M + j] = (float)j;
+            flat[M + i * M + j] = (float)i;
             printf("%f ", flat[M + i * M + j]);
          }   
          printf("\n");
