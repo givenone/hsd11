@@ -8,8 +8,8 @@ int main(void)
 	// input vector size M
 	// output vector size N
 	// matix size M x N
-	int M = 16;
-	int N = 16;
+	int M = 8;
+	int N = 8;
 
 	float* flat = new float[M*(N+1)];
 	float* input = flat;

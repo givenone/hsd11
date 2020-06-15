@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+#include <stdio.h>
+
 #define DATA_SIZE SIZE*(SIZE+1)*sizeof(float) // fpga bram data size
 
 #define min(x,y) (((x)<(y))?(x):(y))
@@ -57,6 +59,7 @@ void FPGA::largeMV(const float* large_mat, const float* input,
   {
     for (int j = 0; j < num_input; j += SIZE)
     {
+        prinf("%d %d\n", i, j);
         // 0) Initialize input vector		
         int block_row = min(SIZE, num_output-i);
         int block_col = min(SIZE, num_input-j);
