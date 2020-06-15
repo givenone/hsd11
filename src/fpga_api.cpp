@@ -41,6 +41,19 @@ const float* __attribute__((optimize("O0"))) FPGA::run()
     *api_ = 0x5555;
     while(*api_ == 0x5555);
 
+
+  float *output = new float[SIZE];
+  for (int i = 0; i < SIZE; ++i)
+  {
+    output[i] = 0;
+    for (int j = 0; j < SIZE; ++j)
+      output[i] += vec[j] * mat[SIZE * i + j];
+  }
+
+  for (int i = 0; i < m_size_; ++i)
+    data_[i] = output[i];
+
+    free(output[]);
     return data_;    
 }
 
