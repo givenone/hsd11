@@ -17,9 +17,23 @@ int main(void)
 	float* output = new float[N];
 	float* output_fpga = new float[N];
 
-	for(int i = 0 ; i < M*(N+1) ; ++i)
-		flat[i] = ((float)rand()) / RAND_MAX;
-
+    for(int i = 0; i< M; i++)
+    {
+        flat[i] = (float)1.0;
+    }
+    for(int i = 0; i< N; i++)
+    {
+        for(int j=0; j < M; j++)
+         {
+            flat[M + i * M + j] = (float)i;
+            printf("%f ", flat[M + i * M + j]);
+         }   
+         printf("\n");
+    }
+    /*
+	for(int i = 0 ; i < M*N ; ++i)
+		flat[i + M] = ((float)rand()) / RAND_MAX;
+    */
 	// computation
 	for (int i = 0; i < N; i++)		
 	{
