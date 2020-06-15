@@ -44,49 +44,50 @@ const float* __attribute__((optimize("O0"))) FPGA::run()
 
 // Test code for bitstream
 void FPGA::largeMV(const float* large_mat, const float* input,
-		float* output, int M, int N)
+		float* output, int num_input, int num_output)
 {
-	// 0) Initialize output vector	
-	for(int m = 0; m < N ; ++m)
-		output[m] = 0;
-	
-	float* vec = this->vector();
-	float* mat = this->matrix();
-	
-	for(int i = 0; i < N ; i += SIZE)
-	{
-		for(int j = 0; j < M ; j += SIZE)
-		{
-			// 0) Initialize input vector
-			int n_remain = min(SIZE, N-i);
-			int m_remain = min(SIZE, M-j);
-			
-            // !) Assign a vector
-            /* IMPLEMENT */
-            memcpy(vec, input + j, sizeof(float) * block_col);
-            //if(block_col < v_size_) memset()
-            // 2) Assign a matrix
-            /* IMPLEMENT */
-            int k=0;
-            for(; k< block_row ; k++)
-            {
-                memcpy(mat+ v_size_* k, large_mat + (i+k) * num_input + j, sizeof(float) * block_col);
-                if(block_col < v_size_) memset(mat+ v_size_ * k + block_col, 0, sizeof(float) * (v_size_ - block_col));
-            }
-            if(k < SIZE)
-            {
-                for(int x = 0; x < SIZE - k ; x++)
-                {
-                    memset(mat+ v_size_ * ( k + x ), 0, sizeof(float) * v_size_);
-                }
-            }
+  float *vec = this->vector();
+  float *mat = this->matrix();
 
-			// 3) Call a function `run() to execute MV multiplication
-			const float* rst = this->run();
+  // 0) Initialize output vector
+  for (int i = 0; i < num_output; ++i)
+    output[i] = 0;
 
-			// 4) Accumulate intermediate results
-			for(int nn = 0; nn < n_remain; ++nn)
-				output[i + nn] += rst[nn];
-		} 
-	}
+  for (int i = 0; i < num_output; i += m_size_)
+  {
+    for (int j = 0; j < num_input; j += v_size_)
+    {
+        // 0) Initialize input vector		
+        int block_row = min(m_size_, num_output-i);
+        int block_col = min(v_size_, num_input-j);
+
+        // !) Assign a vector
+        /* IMPLEMENT */
+        memcpy(vec, input + j, sizeof(float) * block_col);
+        //if(block_col < v_size_) memset()
+        // 2) Assign a matrix
+        /* IMPLEMENT */
+        int k=0;
+        for(; k< block_row ; k++)
+        {
+            memcpy(mat+ v_size_* k, large_mat + (i+k) * num_input + j, sizeof(float) * block_col);
+            if(block_col < v_size_) memset(mat+ v_size_ * k + block_col, 0, sizeof(float) * (v_size_ - block_col));
+        }
+        if(k < m_size_)
+        {
+            for(int x = 0; x < m_size_ - k ; x++)
+            {
+                memset(mat+ v_size_ * ( k + x ), 0, sizeof(float) * v_size_);
+            }
+        }
+        // 3) Call a function `block_call() to execute MV multiplication
+        const float* ret = this->blockMV();
+
+        // 4) Accumulate intermediate results
+        for(int row = 0; row < block_row; ++row)
+        {
+            output[i + row] += ret[row];
+        }
+    }
+  }
 }
