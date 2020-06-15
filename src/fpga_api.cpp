@@ -87,7 +87,7 @@ void FPGA::largeMV(const float* large_mat, const float* input,
         {
             for(int x =0 ; x < SIZE; x++)
             {
-                printf("%f ", *(data + (y * SIZE) + x ));
+                printf("%f ", *(this->data_ + (y * SIZE) + x ));
             }
         }
 
